@@ -13,7 +13,10 @@ var ng2now = {
     Filter: Pipe,
     RouterConfig: State
 };
+
+
+if (!exports) exports = {};
 export default ng2now;
 
 // Legacy support
-window.angular2now = exports;
+window.angular2now = ng2now;
