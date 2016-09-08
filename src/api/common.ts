@@ -1,4 +1,5 @@
-// The library is below
+// Fake exports for CDN users and manual loaders
+if (!exports) exports = {};
 
 const SERVICE_PREFIX = 'service';
 const ANNOTATION     = '$$ng2now';

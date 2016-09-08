@@ -14,9 +14,9 @@ var ng2now = {
     RouterConfig: State
 };
 
-
-if (!exports) exports = {};
 export default ng2now;
 
-// Legacy support
+window.ng2now = ng2now;
+
+// Legacy support for angular2-now users
 window.angular2now = ng2now;
