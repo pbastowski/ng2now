@@ -22,7 +22,7 @@ if (typeof Object.assign != 'function') {
 }
 // Fake exports for CDN users and manual loaders
 if (typeof exports === 'undefined')
-    exports = {};
+    var exports = {};
 var SERVICE_PREFIX = 'service';
 var ANNOTATION = '$$ng2now';
 var common = {
