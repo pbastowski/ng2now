@@ -1,3 +1,6 @@
 src/
 package.sh
 npm-debug.log
+.idea/
+.npmignore
+.idea/
