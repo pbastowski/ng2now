@@ -21,7 +21,8 @@ if (typeof Object.assign != 'function') {
     };
 }
 
-// The library is below
+// Fake exports for CDN users and manual loaders
+if (!exports) exports = {};
 
 const SERVICE_PREFIX = 'service';
 const ANNOTATION     = '$$ng2now';
@@ -514,7 +515,10 @@ var ng2now = {
     Filter: Pipe,
     RouterConfig: State
 };
+
 export default ng2now;
 
-// Legacy support
-window.angular2now = exports;
+window.ng2now = ng2now;
+
+// Legacy support for angular2-now users
+window.angular2now = ng2now;

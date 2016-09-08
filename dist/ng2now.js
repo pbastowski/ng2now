@@ -20,7 +20,9 @@ if (typeof Object.assign != 'function') {
         return target;
     };
 }
-// The library is below
+// Fake exports for CDN users and manual loaders
+if (!exports)
+    exports = {};
 var SERVICE_PREFIX = 'service';
 var ANNOTATION = '$$ng2now';
 var common = {
@@ -440,6 +442,7 @@ var ng2now = {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ng2now;
-// Legacy support
-window.angular2now = exports;
+window.ng2now = ng2now;
+// Legacy support for angular2-now users
+window.angular2now = ng2now;
 //# sourceMappingURL=ng2now.js.map
