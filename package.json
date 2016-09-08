@@ -1,6 +1,6 @@
 {
   "name": "ng2now",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "ng2now is the concise successor to angular2-now",
   "main": "dist/ng2now.js",
   "repository": {
