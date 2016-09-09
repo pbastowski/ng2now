@@ -69,6 +69,52 @@ export function SetModule(...args) {
     return angular.module.apply(angular, args);
 }
 
+/*
+@Component(options)
+
+Creates an AngularJS component in the module set with the last call to
+SetModule(). Internally, angular.module().component() is called to
+create the component described with this decorator.
+
+The `options` argument is a literal object that can have the following
+parameters, in addition to those accepted by the AngularJS component()
+method.
+
+@param selector
+    The kebab-cased name of the element as you will use it in
+    your html. ex: "my-app" or "home-page".
+
+@param providers
+@param inject
+    An array of service class names or strings, whose singleton objects
+    will be injected into the component's constructor. Please see
+    the doco for `@Inject` parameter `providers` for more details.
+
+@param inputs
+    An array of strings that represent the attribute names, whose passed
+    values will be assigned to your component's controller (this).
+    `inputs` can be used in place of `bindings` and assumes
+    one-directional "<" input binding.
+    The input can be supplied in two ways: as the name and also as the
+    name with an annotation. If only the name is supplied then the
+    annotation is assumed to be "<".
+    For example: "xxx" or "xxx:&" or "xxx:@" or "xxx:<" or "xxx:=?"
+    or "xxx:<yyy".
+    See AngularJS documentation for component(), section on bindings
+    for more information.
+
+@param stateConfig
+@param routerConfig
+    For details please see the documentation for @State.
+
+For other parameters that you can specify, please refer to the AngularJS
+documentation for component() for further details.
+
+Examples:
+
+    @Component
+
+*/
 export function Component(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options
@@ -148,7 +194,7 @@ export function Directive(selector, options = {}) {
             selector = selector.slice(1);
         }
 
-        // The name used when creating the driective must be camelCased
+        // The name used when creating the directive must be camelCased
         directiveName = camelCase(selector || '') + '';
         //console.log('@Directive: ', directiveName, options.selector, selector);
 
@@ -167,8 +213,8 @@ export function Directive(selector, options = {}) {
         }
 
         decorate(target, {
-                        selector,
-                        directiveName,
+            selector,
+            directiveName,
             moduleName: common.moduleName
         });
 
@@ -230,6 +276,45 @@ export function Injectable(name, options = {}) {
     }
 }
 
+/**
+
+@Inject(providers)
+
+Annotates the class with the names of services that are to be injected
+into the class's constructor.
+
+@param providers   (also known as services)
+    An array, or argument list, of service class names or strings,
+    whose singleton objects will be injected into the component's
+    constructor. Your ES6 classes can be injected without prior
+    decoration with @Injectable(). Classes injected in this way will
+    be assigned a generated unique name that will be resolved
+    automatically everywhere where you inject that class using
+    @Inject() or the providers[] array.
+
+Examples:
+
+    class MyService {
+        abc = 1234
+    }
+
+    // We inject the class object explicitly
+    @Inject(MyService)
+    class AppService {
+        constructor(my) {
+            console.log(my.abc) // --> 123
+        }
+    }
+
+    // We could use `@Inject`, but `providers` does the same job
+    @Component({ providers: [ MyService ] })
+    class App {
+        constructor(my) {
+            console.log(my.abc) // --> 123
+        }
+    }
+*/
+
 export function Inject(...args) {
     let deps;
 
@@ -283,11 +368,21 @@ export function Inject(...args) {
     };
 }
 /**
-    Pipe and Filter
 
-    In Angular2 pipes are pure functions that take arguments and return
-    a value. No mutations are allowed and no side effects. So, injections
-    are not very useful, because they could potentially cause side effects.
+Pipe(options) or
+Filter(options)
+
+@param name
+    The name (string) of the pipe or te filter.
+
+@param providers
+    An array of service class names or strings, whose singleton objects
+    will be injected into the component's constructor. Please see
+    the doco for `@Inject` parameter `providers` for more details.
+
+In Angular2 pipes are pure functions that take arguments and return
+a value. No mutations are allowed and no side effects. So, injections
+are not very useful, because they could potentially cause side effects.
 
     @Pipe({ name: 'filt'})
     class Filt {
@@ -296,8 +391,8 @@ export function Inject(...args) {
       }
     }
 
-    However, for those who want to inject services into their filters
-    that can be easily accomplished as shown below.
+However, for those who want to inject services into their filters,
+that can be easily accomplished as shown below.
 
     @Pipe({ name: 'filt', providers: ['$rootScope'] })
     class Filt {
@@ -307,8 +402,9 @@ export function Inject(...args) {
         }
       }
     }
-    Filter is a synonym for the Angular2 decorator Pipe. Filter exists just
-    for Angular1 nostalgic reasons.
+
+`Filter` is a synonym for the Angular2 decorator `Pipe`. Filter exists just
+for Angular1 nostalgic reasons.
 
 */
 
@@ -469,15 +565,41 @@ export function Pipe(options = {}) {
         return target;
     };
 }
-/**
- * Bootstraps the Angular 1.x app.
- *
- * @param ?target   undefined | string | class
- *      undefined:  bootstraps on document and the current angular module
- *      string:     will use document.querySelector to find the element by this string
- *      class:      bootstraps on the component defined on this class, looks for selector
- *
- * @param ?config   angular.bootstrap() config object, see AngularJS doco
+/*
+
+bootstrap(options)
+
+Bootstraps the Angular 1.x app.
+
+@param ?target = undefined | "string" | ClassName
+
+    undefined:  Bootstraps on document and the current angular module,
+                as set by the last call to SetModule()
+    "string":   Will use document.querySelector to find the element by
+                this string and bootstrap on it.
+    ClassName:  Bootstraps on the component defined on this class. The
+                module name must be the same as the selector.
+
+@param ?config
+
+    The angular.bootstrap() config object, see AngularJS documentation.
+
+Examples of how to bootstrap ng2now:
+
+    SetModule('my-app', []);
+    @Component({ selector: 'my-app', ... })
+    class MyApp {}
+
+    // Use the selector name, which must match the module name.
+    bootstrap(MyApp)
+
+    // Or use the element name, which must match the module name.
+    bootstrap('my-app')
+
+    // Or bootstrap on document.body and the last module name set with
+    // SetModule will be assumed.
+    bootstrap()
+
  */
 export function bootstrap(target, config) {
     let bootOnDocument = false;
