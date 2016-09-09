@@ -1,9 +1,19 @@
 /**
-    Pipe and Filter
 
-    In Angular2 pipes are pure functions that take arguments and return
-    a value. No mutations are allowed and no side effects. So, injections
-    are not very useful, because they could potentially cause side effects.
+Pipe(options) or
+Filter(options)
+
+@param name
+    The name (string) of the pipe or te filter.
+
+@param providers
+    An array of service class names or strings, whose singleton objects
+    will be injected into the component's constructor. Please see
+    the doco for `@Inject` parameter `providers` for more details.
+
+In Angular2 pipes are pure functions that take arguments and return
+a value. No mutations are allowed and no side effects. So, injections
+are not very useful, because they could potentially cause side effects.
 
     @Pipe({ name: 'filt'})
     class Filt {
@@ -12,8 +22,8 @@
       }
     }
 
-    However, for those who want to inject services into their filters
-    that can be easily accomplished as shown below.
+However, for those who want to inject services into their filters,
+that can be easily accomplished as shown below.
 
     @Pipe({ name: 'filt', providers: ['$rootScope'] })
     class Filt {
@@ -23,8 +33,9 @@
         }
       }
     }
-    Filter is a synonym for the Angular2 decorator Pipe. Filter exists just
-    for Angular1 nostalgic reasons.
+
+`Filter` is a synonym for the Angular2 decorator `Pipe`. Filter exists just
+for Angular1 nostalgic reasons.
 
 */
 

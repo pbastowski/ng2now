@@ -1,17 +1,18 @@
-/*
-@Inject(services)
+/**
 
-Annotates the class with the names of services that are to be injected into the
-class's constructor.
+@Inject(providers)
 
-@param services
+Annotates the class with the names of services that are to be injected
+into the class's constructor.
+
+@param providers   (also known as services)
     An array, or argument list, of service class names or strings,
     whose singleton objects will be injected into the component's
     constructor. Your ES6 classes can be injected without prior
     decoration with @Injectable(). Classes injected in this way will
-    be assigned a generated unique name that will be resolved automatically
-    everywhere where you inject that class using @Inject() or the
-    providers[] array.
+    be assigned a generated unique name that will be resolved
+    automatically everywhere where you inject that class using
+    @Inject() or the providers[] array.
 
 Examples:
 
