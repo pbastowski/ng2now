@@ -1,3 +1,37 @@
+/*
+@Component(options)
+
+Creates an AngularJS component in the module set with the last call to SetModule().
+Internally, angular.module().component() is called to create the component
+described with this decorator.
+
+The `options` argument is a literal object that can have the following parameters,
+in addition to those accepted by the AngularJS component() method.
+
+@param selector     The kebab-cased name of the element as you will use it in
+                    your html. ex: "my-app" or "home-page".
+
+@param providers    An array of service class names or strings whose singleton objects
+                    will be injected into the component's constructor. Your ES6
+                    classes can be injected without prior decoration with Injectable.
+                    Classes injected in this way will be assigned a unique generated
+                    name that will be resolved everywhere that you inject that class.
+
+@param inputs       An array of strings that represent the attribute names, whose passed
+                    values will be assigned to your component's controller (this).
+                    `inputs` can be used in place of `bindings` and assumes
+                    one-directional "<" input binding.
+                    The input can be supplied in two ways: as the name and also as the
+                    name with an annotation. If only the name is supplied then the
+                    annotation is assumed to be "<".
+                    For example: "xxx" or "xxx:&" or "xxx:@" or "xxx:<" or "xxx:=?"
+                    or "xxx:<yyy".
+                    See AngularJS documentation for component(), section on bindings
+                    for more information.
+
+For other parameters that you can specify, please refer to the AngularJS documentation for component() for further details.
+
+*/
 export function Component(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options

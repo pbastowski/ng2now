@@ -16,7 +16,7 @@ export function Directive(selector, options = {}) {
             selector = selector.slice(1);
         }
 
-        // The name used when creating the driective must be camelCased
+        // The name used when creating the directive must be camelCased
         directiveName = camelCase(selector || '') + '';
         //console.log('@Directive: ', directiveName, options.selector, selector);
 
@@ -35,8 +35,8 @@ export function Directive(selector, options = {}) {
         }
 
         decorate(target, {
-                        selector,
-                        directiveName,
+            selector,
+            directiveName,
             moduleName: common.moduleName
         });
 

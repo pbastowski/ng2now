@@ -22,6 +22,15 @@ So, if you like the clean syntax of Angular 2, but are not yet ready or able to 
 <script src="https://unpkg.com/ng2now/dist/ng2now.js"></script>
 ```
 
+## Peer dependencies
+
+- AngularJS 1.5+
+- ui-router 1.x (optional)
+
+ng2now depends on AngularJS 1.5+.
+
+If you are also going to use the `@State` decorator or the stateConfig/routerConfig options of the Component decorator, then you will also have a dependency on ui-router 1.x.
+
 ## Usage with ES6 or TypeScript
 
 Use ng2now with an **ES6 transpiler** like **Babel** or **TypeScript**. Both work equally well.

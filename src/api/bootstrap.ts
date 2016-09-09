@@ -1,12 +1,35 @@
-/**
- * Bootstraps the Angular 1.x app.
- *
- * @param ?target   undefined | string | class
- *      undefined:  bootstraps on document and the current angular module
- *      string:     will use document.querySelector to find the element by this string
- *      class:      bootstraps on the component defined on this class, looks for selector
- *
- * @param ?config   angular.bootstrap() config object, see AngularJS doco
+/*
+bootstrap()
+
+Bootstraps the Angular 1.x app.
+
+@param ?target   undefined | string | class
+
+     undefined:  Bootstraps on document and the current angular module,
+                 as set by the last call to SetModule()
+     string:     Will use document.querySelector to find the element by
+                 this string and bootstrap on it.
+     class:      Bootstraps on the component defined on this class. The
+                 module name must be the same as the selector.
+
+@param ?config   angular.bootstrap() config object, see AngularJS doco
+
+An example of how to bootstrap ng2now.
+
+    SetModule('my-app', []);
+    @Component({ selector: 'my-app', ... })
+    class MyApp {}
+
+    // Use the selector name, which must match the module name.
+    bootstrap(MyApp)
+    
+    // Or use the element name, which must match the module name.
+    bootstrap('my-app')
+
+    // Or bootstrap on document.body and the last module name set with
+    // SetModule will be assumed.
+    bootstrap()
+
  */
 export function bootstrap(target, config) {
     let bootOnDocument = false;
