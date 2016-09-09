@@ -9,8 +9,13 @@ export function Component(selector, options = {}) {
     // console.log('@Component: ', selector);
     return function (target, name) {
         options.providers = options.providers || options.inject;
-        if (options.providers) {
+        if (options.providers && options.providers instanceof Array) {
             target = Inject(options.providers)(target);
+        }
+
+        options.stateConfig = options.stateConfig || options.routerConfig;
+        if (options.stateConfig && options.stateConfig instanceof Object) {
+            target = State(options.stateConfig)(target);
         }
 
         // The name used when creating the component must be camelCased

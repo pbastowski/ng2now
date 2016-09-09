@@ -1,4 +1,4 @@
-var ng2now = {
+const ng2now = {
     options,
     SetModule,
     Component,

@@ -76,8 +76,12 @@ function Component(selector, options) {
     // console.log('@Component: ', selector);
     return function (target, name) {
         options.providers = options.providers || options.inject;
-        if (options.providers) {
+        if (options.providers && options.providers instanceof Array) {
             target = Inject(options.providers)(target);
+        }
+        options.stateConfig = options.stateConfig || options.routerConfig;
+        if (options.stateConfig && options.stateConfig instanceof Object) {
+            target = State(options.stateConfig)(target);
         }
         // The name used when creating the component must be camelCased
         var componentName = camelCase(selector || '') + '';
@@ -242,6 +246,35 @@ function Inject() {
     };
 }
 exports.Inject = Inject;
+/**
+    Pipe and Filter
+
+    In Angular2 pipes are pure functions that take arguments and return
+    a value. No mutations are allowed and no side effects. So, injections
+    are not very useful, because they could potentially cause side effects.
+
+    @Pipe({ name: 'filt'})
+    class Filt {
+      transform(value, args) {
+        return `Hello ${value} and welcome ${JSON.stringify(args)}.`
+      }
+    }
+
+    However, for those who want to inject services into their filters
+    that can be easily accomplished as shown below.
+
+    @Pipe({ name: 'filt', providers: ['$rootScope'] })
+    class Filt {
+      constructor(private $rootScope) {
+        return (value, args) => {
+          return `Hello ${value} and welcome ${JSON.stringify(args)}.`
+        }
+      }
+    }
+    Filter is a synonym for the Angular2 decorator Pipe. Filter exists just
+    for Angular1 nostalgic reasons.
+
+*/
 function Pipe(options) {
     if (options === void 0) { options = {}; }
     if (typeof options === 'string') {
@@ -254,7 +287,10 @@ function Pipe(options) {
             moduleName: common.moduleName,
             pipeName: options.name
         });
-        common.angularModule(common.moduleName).filter(options.name, target);
+        if (options.providers && options.providers instanceof Array) {
+            target = Inject(options.providers)(target);
+        }
+        common.angularModule(common.moduleName).filter(options.name, target.prototype.transform ? function () { return target.prototype.transform; } : target);
         return target;
     };
 }

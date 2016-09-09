@@ -80,8 +80,13 @@ export function Component(selector, options = {}) {
     // console.log('@Component: ', selector);
     return function (target, name) {
         options.providers = options.providers || options.inject;
-        if (options.providers) {
+        if (options.providers && options.providers instanceof Array) {
             target = Inject(options.providers)(target);
+        }
+
+        options.stateConfig = options.stateConfig || options.routerConfig;
+        if (options.stateConfig && options.stateConfig instanceof Object) {
+            target = State(options.stateConfig)(target);
         }
 
         // The name used when creating the component must be camelCased
@@ -277,6 +282,37 @@ export function Inject(...args) {
         return target;
     };
 }
+/**
+    Pipe and Filter
+
+    In Angular2 pipes are pure functions that take arguments and return
+    a value. No mutations are allowed and no side effects. So, injections
+    are not very useful, because they could potentially cause side effects.
+
+    @Pipe({ name: 'filt'})
+    class Filt {
+      transform(value, args) {
+        return `Hello ${value} and welcome ${JSON.stringify(args)}.`
+      }
+    }
+
+    However, for those who want to inject services into their filters
+    that can be easily accomplished as shown below.
+
+    @Pipe({ name: 'filt', providers: ['$rootScope'] })
+    class Filt {
+      constructor(private $rootScope) {
+        return (value, args) => {
+          return `Hello ${value} and welcome ${JSON.stringify(args)}.`
+        }
+      }
+    }
+    Filter is a synonym for the Angular2 decorator Pipe. Filter exists just
+    for Angular1 nostalgic reasons.
+
+*/
+
+
 export function Pipe(options = {}) {
 
     if (typeof options === 'string') {
@@ -291,16 +327,18 @@ export function Pipe(options = {}) {
             pipeName:   options.name
         });
 
+        if (options.providers && options.providers instanceof Array) {
+            target = Inject(options.providers)(target);
+        }
+
         common.angularModule(common.moduleName).filter(
-            options.name, target
-            //function () { return target.prototype.transform } :
+            options.name,
+            target.prototype.transform ? function () { return target.prototype.transform } : target
         );
 
         return target
     }
-}
-
-export function State(options = {}) {
+}export function State(options = {}) {
     if (options.name === undefined && options.hasOwnProperty('html5Mode') === false) {
         throw new Error('@State: valid options are: name, url, defaultRoute, template, templateUrl, templateProvider, resolve, abstract, parent, data.');
     }
@@ -500,7 +538,7 @@ export function bootstrap(target, config) {
     }
 }
 
-var ng2now = {
+const ng2now = {
     options,
     SetModule,
     Component,
