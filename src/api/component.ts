@@ -1,4 +1,5 @@
-/*
+/**
+
 @Component(options)
 
 Creates an AngularJS component in the module set with the last call to
@@ -38,6 +39,9 @@ method.
 
 For other parameters that you can specify, please refer to the AngularJS
 documentation for component() for further details.
+
+** Note that controllerAs is set to "vm" by ng2now. You can change this
+by using ng2now.options(). See options() documentation for details.
 
 Examples:
 

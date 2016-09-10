@@ -56,6 +56,21 @@ function options(options) {
         common.uiRouterTemplate = options.uiRouterTemplate;
 }
 exports.options = options;
+/**
+
+SetModule(module:String, dependencies: String[])
+
+SetModule() is a function that must be used instead of angular.module()
+before any ng2now decorators are used. It is functionally equivalent to
+angular.module().
+
+Please see the documentation for angular.module() for more details.
+
+@param module : String
+
+@param dependencies : String[]
+
+*/
 function SetModule() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -66,7 +81,8 @@ function SetModule() {
     return angular.module.apply(angular, args);
 }
 exports.SetModule = SetModule;
-/*
+/**
+
 @Component(options)
 
 Creates an AngularJS component in the module set with the last call to
@@ -106,6 +122,9 @@ method.
 
 For other parameters that you can specify, please refer to the AngularJS
 documentation for component() for further details.
+
+** Note that controllerAs is set to "vm" by ng2now. You can change this
+by using ng2now.options(). See options() documentation for details.
 
 Examples:
 
@@ -388,7 +407,138 @@ function Pipe(options) {
         common.angularModule(common.moduleName).filter(options.name, target.prototype.transform ? function () { return target.prototype.transform; } : target);
         return target;
     };
-}
+} /**
+
+@State(options: Object)
+@RouterConfig(options: Object)
+
+State depends on ui-router 1.x, which has specific support for
+routing AngularJS 1.x components. It will not work with earlier
+versions of ui-router.
+
+State can be used to annotate either a component or a class to
+- configuring html5mode and requireBase parameters
+- assign a ui-router state to it
+- specify the default route
+- provide default inputs that will be assigned to the component's
+  inputs
+
+The `options` literal object is used to provide the following standard
+$stateProvider configuration parameters. Please see the ui-router 1.x
+documentation for details of these standard parameters.
+
+When used to annotate a @Component(): name, url, redirectTo, params,
+abstract, resolve, onEnter, onExit, parent, data
+
+When annotating a class that will be used as a controller, but not
+annotated with @Component, the following parameters can also be
+specified: template, templateUrl, templateProvider, controller,
+controllerAs
+
+In addition to standard ui-router parameters, the following parameters
+can be supplied to configure your States/Routes:
+
+@param ?defaultRoute : Boolean | String
+    truthy = .otherwise(url)
+    string = .otherwise(defaultRoute)
+
+@param ?html5Mode : Boolean
+    See $locationProvider AngularJS documentation
+
+@param ?requireBase : Boolean
+    See $locationProvider AngularJS documentation
+
+If a class is annotated, which is not also annotated with @Component,
+then it is assumed to be the controller.
+
+Examples:
+
+**HTML**
+
+<body>
+    <app></app>
+</body>
+
+**JavaScript**
+
+    import { Component, SetModule, State, bootstrap, Inject } from 'ng2now';
+    // or, if using a CDN then use the line below and comment out the line above
+    // let { Component, SetModule, State, bootstrap, Inject } = ng2now;
+
+    SetModule('app', ['ui.router']);
+
+    class AppService {
+        config = { version: '1.0' }
+        homepage = { stuff: 42 }
+        feature = { things: [1, 2, 3, 4, 5] }
+    }
+
+    // Just configure the html5Mode using @State
+    @State({ html5Mode: true, requireBase: false })
+
+    @Component({
+        selector: 'app',
+        template: `
+            <h1>App <small>version {{ vm.app.config.version }}</h1>
+            <a ui-sref="home">Home</a> <a ui-sref="feature">Feature</a>
+            <hr>
+            <ui-view></ui-view>
+        `,
+        providers: [ AppService ]
+    })
+    class App {
+        // Using TypeScript `private` argument syntax, which automatically
+        // puts the argument `app` onto `this`. So, we don't have to code
+        // `this.app = app;`
+        constructor(private app) {}
+    }
+
+    // Here we configure the route for the home page. Home page is
+    // the default route that we want to display when the app starts.
+    // We also prepare an input, using resolve, that the component will
+    // receive when ui-router instantiates it. This is a feature of
+    // ui-router 1.x. So, do look at ui-router 1.x documentation for
+    // more details on this new feature.
+    // Another way to look at what the resolve is doing is like so:
+    //    <home-page state="vm.app.homepage"></home-page>
+    // The above assumes the host component's controller contains
+    // a reference to app, of course.
+    @State({
+        name: 'home', url: '/home', defaultRoute: true,
+        resolve: { state: Inject(AppService)(app=>app.homepage) }
+      })
+
+    @Component({
+        selector: 'home-page', inputs: ['state'],
+        template: 'Home Page<hr><p>Home state: {{ vm.state | json }}'
+    })
+    class HomePage {}
+
+
+    // The feature component has its own route and we also prepare
+    // an input using resolve. This is a feature of ui-router 1.x.
+    @State({
+        name: 'feature', url: '/feature',
+        resolve: { state: Inject(AppService)(app=>app.feature) }
+    })
+
+    @Component({
+        selector: 'feature', inputs: ['state'],
+        template: 'Feature Page<hr><p>Feature state: {{ vm.state | json }}',
+        providers: ['$rootScope', '$timeout']
+    })
+    class FeaturePage {
+        constructor(private $rootScope, $timeout) {
+          $timeout(()=>$rootScope.$emit('my-event'), 2000)
+        }
+        $onInit() {
+            // do stuff with the injected $rootScope, for example
+            this.$rootScope.$on('my-event', ()=>console.log('DOING stuff'))
+        }
+    }
+
+    bootstrap(App);
+*/
 exports.Pipe = Pipe;
 function State(options) {
     if (options === void 0) { options = {}; }
@@ -447,7 +597,6 @@ function State(options) {
                     // The State applied to a bootstrap component can be abstract,
                     // if you don't want that state to be able to activate.
                     abstract: options.abstract,
-                    params: options.params,
                     // Do we need to resolve stuff?
                     // Or perhaps inject providers using resolve
                     resolve: options.resolve || resolves || undefined,
