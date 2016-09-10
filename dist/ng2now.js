@@ -184,6 +184,22 @@ function Component(selector, options) {
     };
 }
 exports.Component = Component;
+/**
+
+ @Directive( options : Object)
+
+ Examples:
+
+ // This simple input validator returns true (input is valid)
+ // if the input value is "ABC"
+ @Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
+ class Valid {
+     $onInit() {
+         this.ngModel.$validators.valid = val => val==='ABC'
+     }
+ }
+
+ */
 function Directive(selector, options) {
     if (options === void 0) { options = {}; }
     // Allow selector to be passed as string before the options or as part of the options

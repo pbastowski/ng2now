@@ -62,13 +62,9 @@ SetModule('my-app', ['angular-meteor']);
     ?providers: ['$http', '$q', 'myService'],  // alias for @Inject
     ?replace: true or false,
     ?transclude: true or false,
-    ?scope: undefined or true or same as bind
+    ?scope: undefined or true or same as bind,
+    providers: [ '$http', '$q' ]
 })
-
-// Inject is optional, as injected objects can be specified in the 
-// providers property of @Component
-@Inject('$http', '$q'); // Passing injectables directly
-                        // Also valid: @Inject(['$http', '$q'])
 
 class App {
     constructor($http, $q) { }
@@ -86,9 +82,6 @@ The annotations below are not Angular 2, but for me they make coding in Angular 
  
 @Directive()     // alias for @Component
  
-@ScopeShared()  // same as { scope: undefined } on @Directive
- 
-@ScopeNew()     // same as { scope: true } on @Directive 
 ```
 
 Client-side routing with ui-router 1.x
