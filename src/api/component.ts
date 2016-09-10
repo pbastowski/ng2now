@@ -73,6 +73,7 @@ export function Component(selector, options = {}) {
 
         decorate(target, {
             selector,
+            componentName,
 
             moduleName: common.moduleName,
 
@@ -90,7 +91,7 @@ export function Component(selector, options = {}) {
         // If only the name is supplied then the annotation is assumed to be "<".
         // For example: "xxx" or "xxx:&" or "xxx:@" or "xxx:<" or "xxx:=?" or "xxx:<yyy"
         if (options.inputs && options.inputs instanceof Array) {
-            options.bindings = {};
+            options.bindings = options.bindings || {};
             options.inputs.forEach(input=>options.bindings[input.split(':')[0]] = input.split(':')[1] || '<')
             //console.log('@Component: bindings: ', selector, options.bindings)
         }

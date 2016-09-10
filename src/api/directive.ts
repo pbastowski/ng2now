@@ -2,6 +2,9 @@
 
  @Directive( options : Object)
 
+ @Directive only creates directives and never components. If you want
+ to make a component then use the @Component decorator.
+
  Examples:
 
  // This simple input validator returns true (input is valid)
@@ -9,7 +12,16 @@
  @Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
  class Valid {
      $onInit() {
-         this.ngModel.$validators.valid = val => val==='ABC'
+         this.ngModel.$validators.valid = val => val==='ABC';
+     }
+ }
+
+ // The auto-focus directive is used to make an input receive focus
+ // when the page loads.
+ @Directive({ selector: 'auto-focus', providers: [ '$element' ]})
+ class AutoFocus {
+     constructor(el) {
+         el[[0].focus();
      }
  }
 
@@ -47,7 +59,7 @@ export function Directive(selector, options = {}) {
         // If only the name is supplied then the annotation is assumed to be "<".
         // For example: "xxx" or "xxx:&" or "xxx:@" or "xxx:<" or "xxx:=?" or "xxx:<yyy"
         if (options.inputs && options.inputs instanceof Array) {
-            options.bindings = {};
+            options.bindings = options.bindings || {};
             options.inputs.forEach(input=>options.bindings[input.split(':')[0]] = input.split(':')[1] || '<')
         }
 
@@ -62,16 +74,16 @@ export function Directive(selector, options = {}) {
             // Don't set controllerAs on directive, as it should inherit from the parent
             controllerAs:     options.controllerAs,
             // Always bind to controller
-            bindToController: options.bindings || options.bindToController ? true : true,
+            bindToController: options.bindings || true,
             restrict:         isClass ? 'C' : 'A',
-            scope:            options.bindings || (options.hasOwnProperty('scope') ? options.scope : undefined),
-            template:         options.template,
-            templateUrl:      options.templateUrl,
+            scope:            options.hasOwnProperty('scope') ? true : undefined,
             controller:       target,
-            replace:          options.replace,
             require:          options.require,
-            link:             options.link,
-            transclude:       options.transclude
+            // template:         options.template,
+            // templateUrl:      options.templateUrl,
+            // replace:          options.replace,
+            // link:             options.link,
+            // transclude:       options.transclude
         };
 
         // console.log('@Directive: ddo: ', directiveName, Object.assign({}, ddo));
