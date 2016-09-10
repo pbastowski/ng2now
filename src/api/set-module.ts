@@ -12,6 +12,12 @@ Please see the documentation for angular.module() for more details.
 
 @param dependencies : String[]
 
+Example:
+
+    import { SetModule } from 'ng2now';
+
+    SetModule('app', ['ui.router']);
+
 */
 
  export function SetModule(...args) {

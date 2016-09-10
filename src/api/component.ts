@@ -15,7 +15,7 @@ method.
     your html. ex: "my-app" or "home-page".
 
 @param providers
-@param inject
+@param inject  (alias for providers)
     An array of service class names or strings, whose singleton objects
     will be injected into the component's constructor. Please see
     the doco for `@Inject` parameter `providers` for more details.
@@ -34,7 +34,7 @@ method.
     for more information.
 
 @param stateConfig
-@param routerConfig
+@param routerConfig  (alias for stateConfig)
     For details please see the documentation for @State.
 
 For other parameters that you can specify, please refer to the AngularJS

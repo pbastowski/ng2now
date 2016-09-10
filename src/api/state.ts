@@ -58,10 +58,10 @@ Examples:
 
     SetModule('app', ['ui.router']);
 
-    class AppService {
-        config = { version: '1.0' }
-        homepage = { stuff: 42 }
-        feature = { things: [1, 2, 3, 4, 5] }
+    let AppState = {
+        config: { version: '1.0' },
+        homepage: { stuff: 42 },
+        feature: { things: [1, 2, 3, 4, 5] }
     }
 
     // Just configure the html5Mode using @State
@@ -75,7 +75,7 @@ Examples:
             <hr>
             <ui-view></ui-view>
         `,
-        providers: [ AppService ]
+        providers: [ AppState ]
     })
     class App {
         // Using TypeScript `private` argument syntax, which automatically
@@ -96,7 +96,7 @@ Examples:
     // a reference to app, of course.
     @State({
         name: 'home', url: '/home', defaultRoute: true,
-        resolve: { state: Inject(AppService)(app=>app.homepage) }
+        resolve: { state: Inject(AppState)(app=>app.homepage) }
       })
 
     @Component({
@@ -110,7 +110,7 @@ Examples:
     // an input using resolve. This is a feature of ui-router 1.x.
     @State({
         name: 'feature', url: '/feature',
-        resolve: { state: Inject(AppService)(app=>app.feature) }
+        resolve: { state: Inject(AppState)(app=>app.feature) }
     })
 
     @Component({
@@ -120,11 +120,14 @@ Examples:
     })
     class FeaturePage {
         constructor(private $rootScope, $timeout) {
-          $timeout(()=>$rootScope.$emit('my-event'), 2000)
+            this.cancelSub = $timeout(()=>$rootScope.$emit('my-event'), 2000)
         }
         $onInit() {
             // do stuff with the injected $rootScope, for example
             this.$rootScope.$on('my-event', ()=>console.log('DOING stuff'))
+        }
+        $onDestroy() {
+            this.cancelSub();
         }
     }
 
@@ -174,7 +177,7 @@ export function State(options = {}) {
                         // Create "resolve" functions
                         inputs.forEach((o, i) => {
                             let n    = aliases[i];
-                            let s    = typeof o === 'function' ? o.serviceName : o;
+                            let s    = typeof o === 'function' || typeof o === 'object' ? o.serviceName : o;
                             let inj  = s.split(':')[0]; // the service to inject
                             let expr = s.slice(inj.length + 1) || inj;  // the optional expression. if absent it's set to the service name
 

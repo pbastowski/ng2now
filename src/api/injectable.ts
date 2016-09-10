@@ -16,10 +16,16 @@ export function Injectable(name, options = {}) {
             target = Inject(options.providers)(target);
         }
 
-        common.angularModule(common.moduleName).service(
-            name,
-            target
-        );
+        if (typeof target === 'function')
+            common.angularModule(common.moduleName).service(
+                name,
+                target
+            );
+        else
+            common.angularModule(common.moduleName).value(
+                name,
+                target
+            );
 
         return target
     }
