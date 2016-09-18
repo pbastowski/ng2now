@@ -22,4 +22,3 @@ function decorate(target, options) {
 function camelCase(s) {
     return s.replace(/-(.)/g, (a, b) => b.toUpperCase());
 }
-

@@ -126,6 +126,14 @@ method.
 @param routerConfig  (alias for stateConfig)
     For details please see the documentation for @State.
 
+@param module
+    This is the name of an angular module that you want to create this
+    component in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
+
 For other parameters that you can specify, please refer to the AngularJS
 documentation for component() for further details.
 
@@ -159,7 +167,7 @@ function Component(selector, options) {
         decorate(target, {
             selector: selector,
             componentName: componentName,
-            moduleName: common.moduleName,
+            moduleName: options.module || common.moduleName,
             // If bootstrap==true, it means that @State should create a default
             // template `<div ui-view></div>` instead of using the selector as the template.
             bootstrap: options.bootstrap || options.root,
@@ -176,7 +184,7 @@ function Component(selector, options) {
             options.inputs.forEach(function (input) { return options.bindings[input.split(':')[0]] = input.split(':')[1] || '<'; });
         }
         //console.log('@ Component: ', selector, options)
-        common.angularModule(common.moduleName).component(componentName, angular.extend({
+        common.angularModule(options.module || common.moduleName).component(componentName, angular.extend({
             controller: target,
             controllerAs: common.controllerAs,
             template: ''
@@ -187,30 +195,38 @@ function Component(selector, options) {
 exports.Component = Component;
 /**
 
- @Directive( options : Object)
+@Directive( options : Object)
 
- @Directive only creates directives and never components. If you want
- to make a component then use the @Component decorator.
+@Directive only creates directives and never components. If you want
+to make a component then use the @Component decorator.
 
- Examples:
+@param module
+    This is the name of an angular module that you want to create this
+    directive in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
 
- // This simple input validator returns true (input is valid)
- // if the input value is "ABC"
- @Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
- class Valid {
-     $onInit() {
-         this.ngModel.$validators.valid = val => val==='ABC';
-     }
- }
+Examples:
 
- // The auto-focus directive is used to make an input receive focus
- // when the page loads.
- @Directive({ selector: 'auto-focus', providers: [ '$element' ]})
- class AutoFocus {
-     constructor(el) {
-         el[[0].focus();
-     }
- }
+// This simple input validator returns true (input is valid)
+// if the input value is "ABC"
+@Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
+class Valid {
+    $onInit() {
+        this.ngModel.$validators.valid = val => val==='ABC';
+    }
+}
+
+// The auto-focus directive is used to make an input receive focus
+// when the page loads.
+@Directive({ selector: 'auto-focus', providers: [ '$element' ]})
+class AutoFocus {
+    constructor(el) {
+        el[[0].focus();
+    }
+}
 
  */
 function Directive(selector, options) {
@@ -246,7 +262,7 @@ function Directive(selector, options) {
         decorate(target, {
             selector: selector,
             directiveName: directiveName,
-            moduleName: common.moduleName
+            moduleName: options.module || common.moduleName
         });
         // Create the angular directive
         var ddo = {
@@ -261,24 +277,73 @@ function Directive(selector, options) {
         };
         // console.log('@Directive: ddo: ', directiveName, Object.assign({}, ddo));
         try {
-            common.angularModule(common.moduleName).directive(directiveName, function () {
+            common.angularModule(options.module || common.moduleName).directive(directiveName, function () {
                 return ddo;
             });
         }
         catch (er) {
-            throw new Error('Does module "' + common.moduleName + '" exist? You may need to use SetModule("youModuleName").');
+            throw new Error('Does module "' + (options.module || common.moduleName) + '" exist? You may need to use SetModule("youModuleName").');
         }
         return target;
     };
 }
 exports.Directive = Directive;
+/**
+ Injectable(options)
+ Service(options)
+
+ @Injectable marks a class as an injectable service. This is Angular2
+ syntax. In ng2now it is not necessary to decorate services with
+ @Injectable. Any class, or literal object, can be injected using any
+ `providers` array or using @Inject. If you
+
+ @param module
+    This is the name of an angular module that you want to create this
+    service in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
+
+ For example:
+
+     @Injectable()  // this is optional
+     @Inject( '$scope' }
+     class AppService {
+         todos = [];
+         constructor(private $scope) {}
+     }
+
+     @Component({ selector: 'todo-list', providers: [ AppService ] })
+     class TodoList {
+        constructor(private app) {
+        }
+     }
+
+     const AppConfig = {
+        title: 'Todos',
+        version: '0.0.1'
+     }
+
+     // Here we inject a literal object
+     @Component({ selector: 'nav-bar', providers: [ AppConfig ] })
+     class NavBar {
+         constructor(private config) {}
+     }
+
+ @param name
+ @param options
+ @returns {(target:any)=>any}
+ @constructor
+
+ */
 function Injectable(name, options) {
     if (options === void 0) { options = {}; }
     if (typeof name === 'object') {
         options = Object.assign({}, name);
         name = options.name;
     }
-    name = name || common.moduleName + '_' + SERVICE_PREFIX + '_' + common.serviceId++;
+    name = name || (options.module || common.moduleName) + '_' + SERVICE_PREFIX + '_' + common.serviceId++;
     return function (target) {
         decorate(target, {
             serviceName: name
@@ -289,9 +354,9 @@ function Injectable(name, options) {
             target = Inject(options.providers)(target);
         }
         if (typeof target === 'function')
-            common.angularModule(common.moduleName).service(name, target);
+            common.angularModule(options.module || common.moduleName).service(name, target);
         else
-            common.angularModule(common.moduleName).value(name, target);
+            common.angularModule(options.module || common.moduleName).value(name, target);
         return target;
     };
 }
@@ -397,6 +462,14 @@ Filter(options)
     will be injected into the component's constructor. Please see
     the doco for `@Inject` parameter `providers` for more details.
 
+@param module
+    This is the name of an angular module that you want to create this
+    pipe in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
+
 In Angular2 pipes are pure functions that take arguments and return
 a value. No mutations are allowed and no side effects. So, injections
 are not very useful, because they could potentially cause side effects.
@@ -433,13 +506,13 @@ function Pipe(options) {
     }
     return function (target) {
         decorate(target, {
-            moduleName: common.moduleName,
+            moduleName: options.module || common.moduleName,
             pipeName: options.name
         });
         if (options.providers && options.providers instanceof Array) {
             target = Inject(options.providers)(target);
         }
-        common.angularModule(common.moduleName).filter(options.name, target.prototype.transform ? function () { return target.prototype.transform; } : target);
+        common.angularModule(options.module || common.moduleName).filter(options.name, target.prototype.transform ? function () { return target.prototype.transform; } : target);
         return target;
     };
 } /**

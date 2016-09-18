@@ -37,6 +37,14 @@ method.
 @param routerConfig  (alias for stateConfig)
     For details please see the documentation for @State.
 
+@param module
+    This is the name of an angular module that you want to create this
+    component in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
+
 For other parameters that you can specify, please refer to the AngularJS
 documentation for component() for further details.
 
@@ -75,7 +83,7 @@ export function Component(selector, options = {}) {
             selector,
             componentName,
 
-            moduleName: common.moduleName,
+            moduleName: options.module || common.moduleName,
 
             // If bootstrap==true, it means that @State should create a default
             // template `<div ui-view></div>` instead of using the selector as the template.
@@ -98,7 +106,7 @@ export function Component(selector, options = {}) {
 
         //console.log('@ Component: ', selector, options)
 
-        common.angularModule(common.moduleName).component(
+        common.angularModule(options.module || common.moduleName).component(
             componentName,
             angular.extend({
                 controller:   target,

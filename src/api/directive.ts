@@ -1,29 +1,37 @@
 /**
 
- @Directive( options : Object)
+@Directive( options : Object)
 
- @Directive only creates directives and never components. If you want
- to make a component then use the @Component decorator.
+@Directive only creates directives and never components. If you want
+to make a component then use the @Component decorator.
 
- Examples:
+@param module
+    This is the name of an angular module that you want to create this
+    directive in. In most cases you don't want to specify this, because
+    it is already specified using SetModule(), but if you need to then
+    this is where you do it. It is your responsibility to ensure that
+    this module exists. Create an angular module like this:
+    `angular.module('your-module-name', [])`.
 
- // This simple input validator returns true (input is valid)
- // if the input value is "ABC"
- @Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
- class Valid {
-     $onInit() {
-         this.ngModel.$validators.valid = val => val==='ABC';
-     }
- }
+Examples:
 
- // The auto-focus directive is used to make an input receive focus
- // when the page loads.
- @Directive({ selector: 'auto-focus', providers: [ '$element' ]})
- class AutoFocus {
-     constructor(el) {
-         el[[0].focus();
-     }
- }
+// This simple input validator returns true (input is valid)
+// if the input value is "ABC"
+@Directive({ selector: 'valid', require: { ngModel: 'ngModel' }})
+class Valid {
+    $onInit() {
+        this.ngModel.$validators.valid = val => val==='ABC';
+    }
+}
+
+// The auto-focus directive is used to make an input receive focus
+// when the page loads.
+@Directive({ selector: 'auto-focus', providers: [ '$element' ]})
+class AutoFocus {
+    constructor(el) {
+        el[[0].focus();
+    }
+}
 
  */
 
@@ -66,7 +74,7 @@ export function Directive(selector, options = {}) {
         decorate(target, {
             selector,
             directiveName,
-            moduleName: common.moduleName
+            moduleName: options.module || common.moduleName
         });
 
         // Create the angular directive
@@ -89,11 +97,11 @@ export function Directive(selector, options = {}) {
         // console.log('@Directive: ddo: ', directiveName, Object.assign({}, ddo));
 
         try {
-            common.angularModule(common.moduleName).directive(directiveName, function () {
+            common.angularModule(options.module || common.moduleName).directive(directiveName, function () {
                 return ddo
             });
         } catch (er) {
-            throw new Error('Does module "' + common.moduleName + '" exist? You may need to use SetModule("youModuleName").');
+            throw new Error('Does module "' + (options.module || common.moduleName) + '" exist? You may need to use SetModule("youModuleName").');
         }
 
         return target;
