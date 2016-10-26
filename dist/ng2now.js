@@ -47,11 +47,6 @@ function options(options) {
         return Object.assign({}, common);
     if (options.hasOwnProperty('controllerAs'))
         common.controllerAs = options.controllerAs;
-    // The noConflict option allows us to control whether or not angular2-now
-    // monkey-patches angular.module.
-    //  true = restore the original angular.module
-    if (options.hasOwnProperty('noConflict') && options.noConflict)
-        angular.module = common.angularModule;
     if (options.uiRouterTemplate)
         common.uiRouterTemplate = options.uiRouterTemplate;
 }
@@ -96,6 +91,7 @@ exports.SetModule = SetModule;
 /**
 
 @Component(options)
+@Component(selector, options)
 
 Creates an AngularJS component in the module set with the last call to
 SetModule(). Internally, angular.module().component() is called to
@@ -108,6 +104,8 @@ method.
 @param selector
     The kebab-cased name of the element as you will use it in
     your html. ex: "my-app" or "home-page".
+    Selector can also be specified separately as the first argument to
+    @Component(), followed by the options object itself.
 
 @param providers
 @param inject  (alias for providers)
@@ -201,18 +199,12 @@ function Component(selector, options) {
 exports.Component = Component;
 /**
 
+@Directive( selector: string, options : Object)
 @Directive( options : Object)
 
 @Directive only creates directives and never components. If you want
 to make a component then use the @Component decorator.
 
-@param module
-    This is the name of an angular module that you want to create this
-    directive in. In most cases you don't want to specify this, because
-    it is already specified using SetModule(), but if you need to then
-    this is where you do it. It is your responsibility to ensure that
-    this module exists. Create an angular module like this:
-    `angular.module('your-module-name', [])`.
 
 Examples:
 
@@ -301,15 +293,7 @@ exports.Directive = Directive;
  @Injectable marks a class as an injectable service. This is Angular2
  syntax. In ng2now it is not necessary to decorate services with
  @Injectable. Any class, or literal object, can be injected using any
- `providers` array or using @Inject. If you
-
- @param module
-    This is the name of an angular module that you want to create this
-    service in. In most cases you don't want to specify this, because
-    it is already specified using SetModule(), but if you need to then
-    this is where you do it. It is your responsibility to ensure that
-    this module exists. Create an angular module like this:
-    `angular.module('your-module-name', [])`.
+ `providers` array or using @Inject.
 
  For example:
 
@@ -320,7 +304,10 @@ exports.Directive = Directive;
          constructor(private $scope) {}
      }
 
-     @Component({ selector: 'todo-list', providers: [ AppService ] })
+     @Component({
+        selector: 'todo-list',
+        providers: [ AppService ]
+     })
      class TodoList {
         constructor(private app) {
         }
@@ -336,11 +323,6 @@ exports.Directive = Directive;
      class NavBar {
          constructor(private config) {}
      }
-
- @param name
- @param options
- @returns {(target:any)=>any}
- @constructor
 
  */
 function Injectable(name, options) {
@@ -457,8 +439,10 @@ function Inject() {
 exports.Inject = Inject;
 /**
 
-Pipe(options) or
-Filter(options)
+@Pipe(name, options)
+@Filter(name, options)
+
+Filter is an alias for Pipe. The functionality is exactly the same.
 
 @param name
     The name (string) of the pipe or te filter.
@@ -467,14 +451,6 @@ Filter(options)
     An array of service class names or strings, whose singleton objects
     will be injected into the component's constructor. Please see
     the doco for `@Inject` parameter `providers` for more details.
-
-@param module
-    This is the name of an angular module that you want to create this
-    pipe in. In most cases you don't want to specify this, because
-    it is already specified using SetModule(), but if you need to then
-    this is where you do it. It is your responsibility to ensure that
-    this module exists. Create an angular module like this:
-    `angular.module('your-module-name', [])`.
 
 In Angular2 pipes are pure functions that take arguments and return
 a value. No mutations are allowed and no side effects. So, injections
@@ -552,7 +528,8 @@ controllerAs
 In addition to standard ui-router parameters, the following parameters
 can be supplied to configure your States/Routes:
 
-@param ?defaultRoute : Boolean | String
+@param ?otherwise : Boolean | String
+@param ?defaultRoute : Boolean | String   (DEPRECATED)
     truthy = .otherwise(url)
     string = .otherwise(defaultRoute)
 
@@ -618,7 +595,7 @@ Examples:
     // The above assumes the host component's controller contains
     // a reference to app, of course.
     @State({
-        name: 'home', url: '/home', defaultRoute: true,
+        name: 'home', url: '/home', otherwise: '/home',
         resolve: { state: Inject(AppState)(app=>app.homepage) }
       })
 
@@ -659,8 +636,10 @@ Examples:
 exports.Pipe = Pipe;
 function State(options) {
     if (options === void 0) { options = {}; }
-    if (options.name === undefined && options.hasOwnProperty('html5Mode') === false) {
-        throw new Error('@State: valid options are: name, url, defaultRoute, template, templateUrl, templateProvider, resolve, abstract, parent, data.');
+    if (options.name === undefined
+        && options.hasOwnProperty('html5Mode') === false
+        && options.hasOwnProperty('html5mode') === false) {
+        throw new Error('@State: valid options are: name, url, defaultRoute, otherwise, template, templateUrl, templateProvider, resolve, abstract, parent, data.');
     }
     return function StateTarget(target) {
         // Configure the state
@@ -671,13 +650,14 @@ function State(options) {
                 // If you don't want this then don't set options.defaultRoute to true
                 // and, instead, use $state.go inside the constructor to active a state.
                 // You can also pass a string to defaultRoute, which will become the default route.
+                options.defaultRoute = options.defaultRoute || options.otherwise || undefined;
                 if (options.defaultRoute) {
                     $urlRouterProvider.otherwise((typeof options.defaultRoute === 'string') ? options.defaultRoute : options.url);
                 }
                 // Optionally configure html5Mode
-                if (options.hasOwnProperty('html5Mode')) {
+                if (options.hasOwnProperty('html5Mode') || options.hasOwnProperty('html5mode')) {
                     $locationProvider.html5Mode({
-                        enabled: options.html5Mode,
+                        enabled: options.html5Mode || options.html5mode,
                         requireBase: options.requireBase
                     });
                 }
