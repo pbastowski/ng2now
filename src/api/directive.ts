@@ -1,17 +1,11 @@
 /**
 
+@Directive( selector: string, options : Object)
 @Directive( options : Object)
 
 @Directive only creates directives and never components. If you want
 to make a component then use the @Component decorator.
 
-@param module
-    This is the name of an angular module that you want to create this
-    directive in. In most cases you don't want to specify this, because
-    it is already specified using SetModule(), but if you need to then
-    this is where you do it. It is your responsibility to ensure that
-    this module exists. Create an angular module like this:
-    `angular.module('your-module-name', [])`.
 
 Examples:
 

@@ -29,7 +29,8 @@ controllerAs
 In addition to standard ui-router parameters, the following parameters
 can be supplied to configure your States/Routes:
 
-@param ?defaultRoute : Boolean | String
+@param ?otherwise : Boolean | String
+@param ?defaultRoute : Boolean | String   (DEPRECATED)
     truthy = .otherwise(url)
     string = .otherwise(defaultRoute)
 
@@ -95,7 +96,7 @@ Examples:
     // The above assumes the host component's controller contains
     // a reference to app, of course.
     @State({
-        name: 'home', url: '/home', defaultRoute: true,
+        name: 'home', url: '/home', otherwise: '/home',
         resolve: { state: Inject(AppState)(app=>app.homepage) }
       })
 
@@ -135,8 +136,10 @@ Examples:
 */
 
 export function State(options = {}) {
-    if (options.name === undefined && options.hasOwnProperty('html5Mode') === false) {
-        throw new Error('@State: valid options are: name, url, defaultRoute, template, templateUrl, templateProvider, resolve, abstract, parent, data.');
+    if (options.name === undefined
+        && options.hasOwnProperty('html5Mode') === false
+        && options.hasOwnProperty('html5mode') === false) {
+        throw new Error('@State: valid options are: name, url, defaultRoute, otherwise, template, templateUrl, templateProvider, resolve, abstract, parent, data.');
     }
 
     return function StateTarget(target) {
@@ -149,14 +152,15 @@ export function State(options = {}) {
                     // If you don't want this then don't set options.defaultRoute to true
                     // and, instead, use $state.go inside the constructor to active a state.
                     // You can also pass a string to defaultRoute, which will become the default route.
+                    options.defaultRoute = options.defaultRoute || options.otherwise || undefined
                     if (options.defaultRoute) {
                         $urlRouterProvider.otherwise((typeof options.defaultRoute === 'string') ? options.defaultRoute : options.url);
                     }
 
                     // Optionally configure html5Mode
-                    if (options.hasOwnProperty('html5Mode')) {
+                    if (options.hasOwnProperty('html5Mode') || options.hasOwnProperty('html5mode')) {
                         $locationProvider.html5Mode({
-                            enabled:     options.html5Mode,
+                            enabled:     options.html5Mode || options.html5mode,
                             requireBase: options.requireBase
                         });
                     }

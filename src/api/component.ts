@@ -1,6 +1,7 @@
 /**
 
 @Component(options)
+@Component(selector, options)
 
 Creates an AngularJS component in the module set with the last call to
 SetModule(). Internally, angular.module().component() is called to
@@ -13,6 +14,8 @@ method.
 @param selector
     The kebab-cased name of the element as you will use it in
     your html. ex: "my-app" or "home-page".
+    Selector can also be specified separately as the first argument to
+    @Component(), followed by the options object itself.
 
 @param providers
 @param inject  (alias for providers)
