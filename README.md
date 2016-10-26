@@ -19,7 +19,7 @@ So, if you like the clean syntax of Angular 2, but are not yet ready or able to 
 **CDN**
 
 ```html
-<script src="https://unpkg.com/ng2now/dist/ng2now.js"></script>
+<script src="https://unpkg.com/ng2now"></script>
 ```
 
 ## Peer dependencies
