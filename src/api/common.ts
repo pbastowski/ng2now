@@ -1,5 +1,5 @@
 // Fake exports for CDN users and manual loaders
-if (typeof exports === 'undefined') var exports = {};
+//if (typeof exports === 'undefined') var exports = {};
 
 const SERVICE_PREFIX = 'service';
 const ANNOTATION     = '$$ng2now';

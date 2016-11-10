@@ -21,8 +21,7 @@ if (typeof Object.assign != 'function') {
     };
 }
 // Fake exports for CDN users and manual loaders
-if (typeof exports === 'undefined')
-    var exports = {};
+//if (typeof exports === 'undefined') var exports = {};
 var SERVICE_PREFIX = 'service';
 var ANNOTATION = '$$ng2now';
 var common = {
@@ -843,9 +842,6 @@ var ng2now = {
     Filter: Pipe,
     RouterConfig: State
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ng2now;
+exports["def" + "ault"] = ng2now;
 window.ng2now = ng2now;
-// Legacy support for angular2-now users
-window.angular2now = ng2now;
 //# sourceMappingURL=ng2now.js.map

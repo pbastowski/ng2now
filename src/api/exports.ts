@@ -14,9 +14,6 @@ const ng2now = {
     RouterConfig: State
 };
 
-export default ng2now;
+exports["def"+"ault"] = ng2now;
 
 window.ng2now = ng2now;
-
-// Legacy support for angular2-now users
-window.angular2now = ng2now;
