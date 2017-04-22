@@ -267,3 +267,5 @@ export function State(options = {}) {
         return target;
     };
 }
+
+export const RouterConfig = State

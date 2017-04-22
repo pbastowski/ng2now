@@ -68,3 +68,5 @@ export function Pipe(options = {}) {
         return target
     }
 }
+
+export const Filter = Pipe

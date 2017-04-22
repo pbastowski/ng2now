@@ -8,11 +8,10 @@
     "url": "https://github.com/pbastowski/ng2now.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc-ng2now": "bash ./package.sh",
-    "prepublish": "npm run tsc-ng2now || true"
+    "build": "bash ./package.sh",
+    "publish-npm": "npm version patch && npm run build || true && npm publish"
   },
-  "keywords": ["angular2-now", "angular", "decorators", "components", "router"],
+  "keywords": ["ng2now", "angular2-now", "angular", "decorators", "components", "router"],
   "author": "Paul Bastowski",
   "license": "MIT"
 }

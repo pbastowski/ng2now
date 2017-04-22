@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // Polyfill Object.assign, if necessary, such as in IE11
 if (typeof Object.assign != 'function') {
     Object.assign = function (target) {
@@ -78,7 +79,7 @@ Example:
 function SetModule() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
+        args[_i] = arguments[_i];
     }
     if (args.length === 0)
         return angular.module(common.moduleName);
@@ -185,6 +186,7 @@ function Component(selector, options) {
         if (options.inputs && options.inputs instanceof Array) {
             options.bindings = options.bindings || {};
             options.inputs.forEach(function (input) { return options.bindings[input.split(':')[0]] = input.split(':')[1] || '<'; });
+            //console.log('@Component: bindings: ', selector, options.bindings)
         }
         //console.log('@ Component: ', selector, options)
         common.angularModule(options.module || common.moduleName).component(componentName, angular.extend({
@@ -348,6 +350,7 @@ function Injectable(name, options) {
     };
 }
 exports.Injectable = Injectable;
+exports.Service = Injectable;
 /**
 
 @Inject(providers)
@@ -391,7 +394,7 @@ Examples:
 function Inject() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
+        args[_i] = arguments[_i];
     }
     var deps;
     if (args[0] instanceof Array) {
@@ -496,7 +499,10 @@ function Pipe(options) {
         common.angularModule(options.module || common.moduleName).filter(options.name, target.prototype.transform ? function () { return target.prototype.transform; } : target);
         return target;
     };
-} /**
+}
+exports.Pipe = Pipe;
+exports.Filter = Pipe;
+/**
 
 @State(options: Object)
 @RouterConfig(options: Object)
@@ -632,7 +638,6 @@ Examples:
 
     bootstrap(App);
 */
-exports.Pipe = Pipe;
 function State(options) {
     if (options === void 0) { options = {}; }
     if (options.name === undefined
@@ -744,6 +749,7 @@ function State(options) {
     };
 }
 exports.State = State;
+exports.RouterConfig = State;
 /**
 
 bootstrap(options)
@@ -838,10 +844,12 @@ var ng2now = {
     Pipe: Pipe,
     State: State,
     bootstrap: bootstrap,
-    Service: Injectable,
-    Filter: Pipe,
-    RouterConfig: State
+    Service: exports.Service,
+    Filter: exports.Filter,
+    RouterConfig: exports.RouterConfig
 };
-exports["def" + "ault"] = ng2now;
-window.ng2now = ng2now;
+// export default ng2now
+// exports["def"+"ault"] = ng2now;
+if (typeof window !== 'undefined')
+    window.ng2now = ng2now;
 //# sourceMappingURL=ng2now.js.map

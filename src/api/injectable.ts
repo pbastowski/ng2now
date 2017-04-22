@@ -70,3 +70,4 @@ export function Injectable(name, options = {}) {
     }
 }
 
+export const Service = Injectable

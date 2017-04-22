@@ -4,3 +4,4 @@ npm-debug.log
 .idea/
 .npmignore
 .idea/
+dist/ng2now.ts

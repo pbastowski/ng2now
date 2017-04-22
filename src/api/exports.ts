@@ -9,11 +9,13 @@ const ng2now = {
     State,
     bootstrap,
 
-    Service: Injectable,
-    Filter: Pipe,
-    RouterConfig: State
+    Service,
+    Filter,
+    RouterConfig
 };
 
-exports["def"+"ault"] = ng2now;
+// export default ng2now
+// exports["def"+"ault"] = ng2now;
 
-window.ng2now = ng2now;
+if (typeof window !== 'undefined')
+    window.ng2now = ng2now
