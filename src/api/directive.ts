@@ -29,7 +29,7 @@ class AutoFocus {
 
  */
 
-export function Directive(selector, options = {}) {
+function Directive(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options
     if (typeof selector === 'object') {

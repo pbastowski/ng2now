@@ -1,4 +1,4 @@
-export function options(options) {
+function options(options) {
     if (!options)
         return Object.assign({}, common);
 

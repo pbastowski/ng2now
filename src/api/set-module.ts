@@ -24,7 +24,7 @@ Example:
 
 */
 
- export function SetModule(...args) {
+ function SetModule(...args) {
     if (args.length===0)
             return angular.module(common.moduleName)
 

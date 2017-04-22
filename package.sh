@@ -22,3 +22,4 @@ cd ../../dist
 tsc -m commonjs -t ES5 --sourceMap ng2now.ts || true
 
 cp ng2now.ts ../src
+rm ng2now.ts

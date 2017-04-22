@@ -135,7 +135,7 @@ Examples:
     bootstrap(App);
 */
 
-export function State(options = {}) {
+function State(options = {}) {
     if (options.name === undefined
         && options.hasOwnProperty('html5Mode') === false
         && options.hasOwnProperty('html5mode') === false) {
@@ -268,4 +268,4 @@ export function State(options = {}) {
     };
 }
 
-export const RouterConfig = State
+const RouterConfig = State

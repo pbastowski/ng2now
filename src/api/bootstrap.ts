@@ -34,7 +34,7 @@ Examples of how to bootstrap ng2now:
     bootstrap()
 
  */
-export function bootstrap(target, config) {
+function bootstrap(target, config) {
     let bootOnDocument = false;
 
     // console.log('@Bootstrap: target: ', decorate(target).selector, decorate(target).moduleName)

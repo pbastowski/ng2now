@@ -37,7 +37,7 @@
      }
 
  */
-export function Injectable(name, options = {}) {
+function Injectable(name, options = {}) {
     if (typeof name === 'object') {
         options = Object.assign({}, name);
         name    = options.name;
@@ -70,4 +70,4 @@ export function Injectable(name, options = {}) {
     }
 }
 
-export const Service = Injectable
+const Service = Injectable

@@ -59,7 +59,7 @@ Examples:
     @Component
 
 */
-export function Component(selector, options = {}) {
+function Component(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options
     if (typeof selector === 'object') {

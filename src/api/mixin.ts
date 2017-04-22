@@ -9,6 +9,6 @@
  * @param externalApi
  */
 
-export function mixin(externalApi) {
+function mixin(externalApi) {
 
 }

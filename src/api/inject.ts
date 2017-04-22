@@ -39,7 +39,7 @@ Examples:
     }
 */
 
-export function Inject(...args) {
+function Inject(...args) {
     let deps;
 
     if (args[0] instanceof Array) {

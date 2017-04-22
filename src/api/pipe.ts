@@ -42,7 +42,7 @@ for Angular1 nostalgic reasons.
 */
 
 
-export function Pipe(options = {}) {
+function Pipe(options = {}) {
 
     if (typeof options === 'string') {
         options = {
@@ -69,4 +69,4 @@ export function Pipe(options = {}) {
     }
 }
 
-export const Filter = Pipe
+const Filter = Pipe

@@ -45,7 +45,7 @@ function decorate(target, options) {
 function camelCase(s) {
     return s.replace(/-(.)/g, (a, b) => b.toUpperCase());
 }
-export function options(options) {
+function options(options) {
     if (!options)
         return Object.assign({}, common);
 
@@ -82,7 +82,7 @@ Example:
 
 */
 
- export function SetModule(...args) {
+ function SetModule(...args) {
     if (args.length===0)
             return angular.module(common.moduleName)
 
@@ -152,7 +152,7 @@ Examples:
     @Component
 
 */
-export function Component(selector, options = {}) {
+function Component(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options
     if (typeof selector === 'object') {
@@ -245,7 +245,7 @@ class AutoFocus {
 
  */
 
-export function Directive(selector, options = {}) {
+function Directive(selector, options = {}) {
 
     // Allow selector to be passed as string before the options or as part of the options
     if (typeof selector === 'object') {
@@ -357,7 +357,7 @@ export function Directive(selector, options = {}) {
      }
 
  */
-export function Injectable(name, options = {}) {
+function Injectable(name, options = {}) {
     if (typeof name === 'object') {
         options = Object.assign({}, name);
         name    = options.name;
@@ -390,7 +390,7 @@ export function Injectable(name, options = {}) {
     }
 }
 
-export const Service = Injectable
+const Service = Injectable
 /**
 
 @Inject(providers)
@@ -432,7 +432,7 @@ Examples:
     }
 */
 
-export function Inject(...args) {
+function Inject(...args) {
     let deps;
 
     if (args[0] instanceof Array) {
@@ -528,7 +528,7 @@ for Angular1 nostalgic reasons.
 */
 
 
-export function Pipe(options = {}) {
+function Pipe(options = {}) {
 
     if (typeof options === 'string') {
         options = {
@@ -555,7 +555,7 @@ export function Pipe(options = {}) {
     }
 }
 
-export const Filter = Pipe
+const Filter = Pipe
 /**
 
 @State(options: Object)
@@ -693,7 +693,7 @@ Examples:
     bootstrap(App);
 */
 
-export function State(options = {}) {
+function State(options = {}) {
     if (options.name === undefined
         && options.hasOwnProperty('html5Mode') === false
         && options.hasOwnProperty('html5mode') === false) {
@@ -826,7 +826,7 @@ export function State(options = {}) {
     };
 }
 
-export const RouterConfig = State
+const RouterConfig = State
 /**
 
 bootstrap(options)
@@ -863,7 +863,7 @@ Examples of how to bootstrap ng2now:
     bootstrap()
 
  */
-export function bootstrap(target, config) {
+function bootstrap(target, config) {
     let bootOnDocument = false;
 
     // console.log('@Bootstrap: target: ', decorate(target).selector, decorate(target).moduleName)
@@ -938,8 +938,15 @@ const ng2now = {
     RouterConfig
 };
 
-// export default ng2now
-// exports["def"+"ault"] = ng2now;
-
-if (typeof window !== 'undefined')
-    window.ng2now = ng2now
+// Node.js style
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ng2now;
+    exports['def'+'ault'] = ng2now;
+}
+else if (typeof define !== 'undefined' && define.amd) {
+    define('ng2now', [], function () {
+        return ng2now;
+    });
+}
+else if (typeof window !== 'undefined')
+    window.ng2now = ng2now;

@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // Polyfill Object.assign, if necessary, such as in IE11
 if (typeof Object.assign != 'function') {
     Object.assign = function (target) {
@@ -50,7 +48,6 @@ function options(options) {
     if (options.uiRouterTemplate)
         common.uiRouterTemplate = options.uiRouterTemplate;
 }
-exports.options = options;
 /**
 
 SetModule(module:String, dependencies: String[])
@@ -87,7 +84,6 @@ function SetModule() {
     // console.log('@SetModule', args[0]);
     return angular.module.apply(angular, args);
 }
-exports.SetModule = SetModule;
 /**
 
 @Component(options)
@@ -197,7 +193,6 @@ function Component(selector, options) {
         return target;
     };
 }
-exports.Component = Component;
 /**
 
 @Directive( selector: string, options : Object)
@@ -286,7 +281,6 @@ function Directive(selector, options) {
         return target;
     };
 }
-exports.Directive = Directive;
 /**
  Injectable(options)
  Service(options)
@@ -349,8 +343,7 @@ function Injectable(name, options) {
         return target;
     };
 }
-exports.Injectable = Injectable;
-exports.Service = Injectable;
+var Service = Injectable;
 /**
 
 @Inject(providers)
@@ -438,7 +431,6 @@ function Inject() {
         return target;
     };
 }
-exports.Inject = Inject;
 /**
 
 @Pipe(name, options)
@@ -500,8 +492,7 @@ function Pipe(options) {
         return target;
     };
 }
-exports.Pipe = Pipe;
-exports.Filter = Pipe;
+var Filter = Pipe;
 /**
 
 @State(options: Object)
@@ -748,8 +739,7 @@ function State(options) {
         return target;
     };
 }
-exports.State = State;
-exports.RouterConfig = State;
+var RouterConfig = State;
 /**
 
 bootstrap(options)
@@ -833,7 +823,6 @@ function bootstrap(target, config) {
         angular.bootstrap(el, [bootModule], config);
     }
 }
-exports.bootstrap = bootstrap;
 var ng2now = {
     options: options,
     SetModule: SetModule,
@@ -844,12 +833,20 @@ var ng2now = {
     Pipe: Pipe,
     State: State,
     bootstrap: bootstrap,
-    Service: exports.Service,
-    Filter: exports.Filter,
-    RouterConfig: exports.RouterConfig
+    Service: Service,
+    Filter: Filter,
+    RouterConfig: RouterConfig
 };
-// export default ng2now
-// exports["def"+"ault"] = ng2now;
-if (typeof window !== 'undefined')
+// Node.js style
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ng2now;
+    exports['def' + 'ault'] = ng2now;
+}
+else if (typeof define !== 'undefined' && define.amd) {
+    define('ng2now', [], function () {
+        return ng2now;
+    });
+}
+else if (typeof window !== 'undefined')
     window.ng2now = ng2now;
 //# sourceMappingURL=ng2now.js.map
