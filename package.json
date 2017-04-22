@@ -1,6 +1,6 @@
 {
   "name": "ng2now",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "ng2now is the concise successor to angular2-now",
   "main": "dist/ng2now.js",
   "repository": {
@@ -11,7 +11,14 @@
     "build": "bash ./package.sh",
     "publish-npm": "npm version patch && npm run build || true && npm publish"
   },
-  "keywords": ["ng2now", "angular2-now", "angular", "decorators", "components", "router"],
+  "keywords": [
+    "ng2now",
+    "angular2-now",
+    "angular",
+    "decorators",
+    "components",
+    "router"
+  ],
   "author": "Paul Bastowski",
   "license": "MIT"
 }
