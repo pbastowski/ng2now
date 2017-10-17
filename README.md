@@ -213,7 +213,9 @@ Please visit the following github repositories and Plunker examples before you s
 `Directive` creates new HTML attributes that can be used to decorate existing or custom elements with new behaviours. Also, directives have no template HTML. A directive is one attribute amongst any number of other attributes on an element. All directives are by default created with shared scope.
 
 Through the options object you can provide the following arguments to the Directive decorator:
- 
+
+Property | Description
+----------|------------
 `selector` | the attribute name, such as "auto-focus" 
 `controllerAs` | optionally specify a controllerAs different to the default "vm"
 `scope` | true
@@ -422,7 +424,7 @@ Below is the list of ng2now options that can be changed. Make sure to set option
 
 Attribute | Type | Description
 ----------|------|-------------------
-controllerAs | string | Allows you to specify a default controllerAs prefix to use for all components. The default prefix is the camel-cased version of the component's selector.   
+controllerAs | string | Allows you to specify a default controllerAs prefix to use for all components. The default prefix is the camel-cased version of the component's selector.
 uiRouterTemplate | string | The default "<div ui-view></div>" template can be overridden with `options.uiRouterTemplate`. This is useful when the `ui-view` should be rendered in an element other than a DIV, such as a SPAN.    
 
 Options can be defined or changed like this:
